@@ -4,7 +4,7 @@ import axios from 'axios'
 import Tweets from './Tweets'
 
 class App extends React.Component {
-  state = {tweets: [], visible: [], search: ''}
+  state = {tweets: [], visible: [], search: '', tweet: ''}
 
   componentDidMount() {
     
@@ -31,6 +31,18 @@ class App extends React.Component {
     }
   }
 
+  updateTweet = (e) => {
+    this.setState({tweet: e.target.value})
+  }
+
+  postTweet = () => {
+    const {tweet} = this.state
+    if(tweet) {
+      axios.post('/api/tweets', {tweet})
+        .then(res => this.setState({tweet: ''}))
+    }
+  }
+
   render() {
     return (
       <div>
@@ -47,6 +59,14 @@ class App extends React.Component {
                 icon={{name: 'search', circular: true}}
                 placeholder="Search..."
               />
+              <hr />
+              <Header as="h2" textAlign="center">
+                <Input
+                  onChange={this.updateTweet}
+                  value={this.state.tweet}
+                />
+                <Button onClick={this.postTweet}>Tweet</Button>
+              </Header>
             </Grid.Column>
             <Grid.Column mobile={16} tablet={16} computer={12}>
               <Tweets tweets={this.state.visible} />
